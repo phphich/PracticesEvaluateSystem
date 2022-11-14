@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>Subject List</h1>
+    <div>
+        <table class="table table-secondary table-hover table-striped">
+            <tr>
+                <th width="15%">Subject ID</th>
+                <th width="35%">Name</th>
+                <th width="20%" align="center">Credit</th>
+                <th>Manage
+                    <a href="{% url 'subjectNew' %}" class="btn btn-primary">New</a>
+                </th>
+            </tr>
+            {% for subject in subjects %}
+                <tr>
+                    <td>{{ subject.subid }}</td>
+                    <td>{{ subject.name }}</td>
+                    <td align="center">{{ subject.credit }}</td>
+                    <td>
+                        <a href="{% url 'subjectUpdate' subject.subid %}" class="btn btn-secondary"> <i class="fa fa-tools"> </i> </a>
+                        <a href="{% url 'subjectDelete' subject.subid %}" class="btn btn-danger"> <i class="fa fa-trash"> </i> </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{%  endblock %}
