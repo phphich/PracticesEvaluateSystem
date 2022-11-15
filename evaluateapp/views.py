@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from .models import *
 from .forms import *
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 def home(request):
     request.session['viewMode'] = "normal"
@@ -276,7 +277,33 @@ def checkResult(request):
         context= {'subjects':subjects}
         return render(request, 'inputStudentID.html', context)
 
-def fullView(request): 
+def userLogin(request):
+    if request.method == 'POST':
+        form = UserAuthenForm(request.POST)
+        if form.is_valid():
+            userName = form.cleaned_data.get('userName')
+            userPass = form.cleaned_data.get('userPass')
+            user = authenticate(username=userName, password=userPass)
+            if user is not None:
+                login(request, user)
+                request.session['userName'] = userName
+                messages.success(request, "User Logged")
+                return redirect('home')
+            else:
+                messages.error(request, "User Name or Password not correct..!!!")
+                context = {'form': form}
+                return render(request, 'userLogin.html', context)
+    else:
+        form = UserAuthenForm()
+        context={'form':form}
+        return render(request, 'userLogin.html', context)
+
+def userLogout(request):
+    logout(request)
+    messages.info(request, "User Logout")
+    return redirect('home')
+
+def fullView(request):
     request.session['viewMode'] = "full"
     return redirect('practiceEvaluate')
 
