@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>Student List</h1>
+    <div class="alert-info">
+        <h3 class="text-danger"> Section: {{ sectionSelected}} ({{ students | length }} คน)</h3>
+        <form method="post" class="form-control">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-2"> เลือกกลุ่มเรียน =></div>
+                <div class="col-6">
+                    <select name="sid" class="form-control" onchange="form.submit();">
+                        {% for section in sections %}
+                            {% if section.id == sectionSelected.id %}
+                                <option selected value="{{ section.id }}">{{ section }}</option>
+                            {% else %}
+                                <option value="{{ section.id }}">{{ section }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <table class="table table-info table-hover table-striped">
+            <tr>
+                <th width="15%">Student ID</th>
+                <th width="35%">Name</th>
+                <th width="20%">Section</th>
+                <th>Manage
+                    <a href="{% url 'studentNew' %}" class="btn btn-primary">New</a>
+                </th>
+            </tr>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.stdid }}</td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.section }}</td>
+                    <td>
+                        <a href="{% url 'studentUpdate' student.stdid %}" class="btn btn-secondary"> <i class="fa fa-tools"> </i> </a>
+                        <a href="{% url 'studentDelete' student.stdid %}" class="btn btn-danger"> <i class="fa fa-trash"> </i> </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{%  endblock %}

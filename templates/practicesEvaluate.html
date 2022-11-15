@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block content %}
+    <script type="text/javascript">
+      $(document).ready(function () {
+            $(".modal-dialog").css("width", "90%");
+      });
+    </script>
+    <script>
+        function setResult(stdid, x) {
+            var n = "result" + stdid
+            document.getElementById(n).value = x;
+           // alert("Hi stdid=" + stdid + ", x="+ x)
+        }
+    </script>
+    <div class="row">
+        <div class="col-8"><h2>Practices Evaluation - {{ section }} </h2> </div>
+        {% if request.session.viewMode == "normal" %}
+            <div class="col-4 text-end"><a href="{% url 'fullView' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-expand-arrows-alt"></i></a> </div>
+        {% else %}
+            <div class="col-4 text-end"><a href="{% url 'normalView' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-compress-arrows-alt"></i></a> </div>
+        {% endif %}
+    </div>
+    <div>
+        <h3>
+            Subject: {{ subject }} <br>
+            <div class="text-danger">
+                Objective
+                : {{ problem.objid }} {{ problem.objdetail }} (Score: {{ problem.fullscore }})
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#myModal">
+                    ...
+                </button>
+            </div>
+        </h3>
+    </div>
+
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog" style="max-width:1000px; max-height:1000px;">>
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Question/Problem</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body form-control">
+              <h2>
+              <textarea cols="200" rows="20" class="form-control" style="font-size: 18pt">{{ problem.question }}
+              </textarea>
+              </h2>
+
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if problem is not None %}
+        <div class="bg bg-primary">
+            <table class="table table-info ">
+                <tr>
+                    <th rowspan="2" width="20%">Student ID</th>
+                    <th rowspan="2" width="30%">Student Name</th>
+                    <th colspan="3" width="50%" class="text-center">
+                        Result
+                        <button type="button" class="btn btn-info" onclick="location.reload();">
+                            <i class="fa fa-sync-alt"></i>
+                        </button>
+
+                    </th>
+                </tr>
+                <tr class="text-center">
+                    <th>ถูกต้อง</th>
+                    <th>ถูกต้องบางส่วน</th>
+                    <th>ไม่ถูกต้อง</th>
+                </tr>
+                {% for student in students %}
+                    <form method="POST" class="form-control" id="{{ student.id }}">
+                        {% csrf_token %}
+                        <input type="hidden"  name="subid" value="{{ subject.subid }}">
+                        <input type="hidden"  name="pid" value="{{ problem.id }}">
+                        <input type="hidden"  name="result{{ student.stdid }}" id="result{{ student.stdid }}" >
+                        <tr>
+                            <td><input type="text" name="stdid" class="bg-light form-control" readonly="readonly" value="{{ student.stdid }}"></td>
+                            <td><input type="text" class="bg-light form-control"  readonly="readonly" value="{{ student.name }}"></td>
+                            {% if student.stdid|getPracticeResult:problem.id == 0 %}
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',3);form.submit();">
+                                </td>
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',2);form.submit();">
+                                </td>
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',1);form.submit();">
+                                </td>
+                            {% elif student.stdid|getPracticeResult:problem.id == 1 %}
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',3);form.submit();">
+                                </td>
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',2);form.submit();">
+                                </td>
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-danger text-white" style="width: 100px" disabled onclick="setResult('{{student.stdid }}',1);">
+                                </td>
+                            {% elif student.stdid|getPracticeResult:problem.id == 2 %}
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',3);form.submit();">
+                                </td>
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-warning text-white" style="width: 100px" disabled onclick="setResult('{{student.stdid }}',2);">
+                                </td>
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',1);form.submit();">
+                                </td>
+                            {% else %}
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-success text-white" style="width: 100px" disabled onclick="setResult('{{student.stdid }}',3);">
+                                </td>
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',2);form.submit();">
+                                </td>
+                                <td class="text-center">
+                                    <input type="button"  class="btn btn-light text-white" style="width: 100px"  onclick="setResult('{{student.stdid }}',1);form.submit();">
+                                </td>
+                            {% endif %}
+                        </tr>
+                    </form>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+    <br>
+    <p class="text-center">
+        <a href="{% url 'practicesSelect'%}" class="btn btn-secondary">
+            <i class="fa fa-rotate-back"></i> Back
+        </a>
+    </p>
+    <br><br>
+{% endblock %}

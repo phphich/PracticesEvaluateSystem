@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Practices Evaluation </h2>
+    <h3>Select Subject & Section</h3>
+    <div>
+        <form method="post" class="form-control">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-2"> เลือกรายวิชา =></div>
+                <div class="col-8">
+                    <select name="subid" class="form-control" onchange="form.submit();">
+                        {% for subject in subjects %}
+                            {% if subject.subid == subjectSelected.subid %}
+                                <option selected value="{{ subject.subid }}">{{ subject }}</option>
+                            {% else %}
+                                <option value="{{ subject.subid }}">{{ subject }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2"> กลุ่มเรียน =></div>
+                <div class="col-8">
+                    <select name="sid" class="form-control">
+                        {% for section in sections %}
+                            {% if section.id == sectionSelected.id %}
+                                <option selected value="{{ section.id }}">{{ section }}</option>
+                            {% else %}
+                                <option value="{{ section.id }}">{{ section }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2"> จุดประสงค์ที่ =></div>
+                <div class="col-8">
+                    <select name="pid" class="form-control">
+                        {% if problems %}
+                            {% for problem in problems %}
+                                {% if problem.id == problemSelected.id %}
+                                    <option selected value="{{ problem.id }}">{{ problem.objid }}  {{ problem.objdetail }}</option>
+                                {% else %}
+                                    <option value="{{ problem.id }}">{{ problem.objid }}  {{ problem.objdetail }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <option value="99999">No Objective</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="col-2">
+                    {% if problems %}
+                        <input type="submit" class="btn btn-primary" value="Select">
+                    {% else %}
+                        <input type="submit" class="btn btn-secondary" value="Select" disabled>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

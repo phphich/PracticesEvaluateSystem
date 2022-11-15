@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>Problem List</h1>
+     <div class="alert-info">
+        <h3 class="text-danger"> Subject: {{ subjectSelected}}</h3>
+        <form method="post" class="form-control">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-2"> เลือกรายวิชา =></div>
+                <div class="col-6">
+                    <select name="subid" class="form-control" onchange="form.submit();">
+                        {% for subject in subjects %}
+                            {% if subject.subid == subjectSelected.subid %}
+                                <option selected value="{{ subject.subid }}">{{ subject }}</option>
+                            {% else %}
+                                <option value="{{ subject.subid }}">{{ subject }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-10">
+            <h3 class="text-success">
+                Problems: {{ problems|length }}
+            </h3>
+        </div>
+        <div class="col-2 text-end">
+            <a href="{% url 'problemNew' %}" class="btn btn-primary">New</a>
+        </div>
+    </div>
+    {% for problem in problems %}
+        <div class="bg-info">
+            <table class="table table-light table-striped">
+                <tr>
+                    <th width="15%">Objective</th>
+                    <td colspan="2">
+                        {{ problem.objid }} {{ problem.objdetail }}
+                        (Score: {{ problem.fullscore }})
+                    </td>
+                </tr>
+                <tr>
+                    <th width="10%">Question
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#question{{ problem.id }}"> >> </button>
+                    </th>
+                    <td width="70%">
+                        <div class="collapse" id="question{{ problem.id }}">
+                            <div>
+                                <textarea readonly="readonly" class="form-control bg-light" rows="5"> {{ problem.question }} </textarea>
+                            </div>
+                            <div class="text-center">
+                                <a href="{% url 'problemUpdate' problem.id %}" class="btn btn-secondary"> <i class="fa fa-tools"> </i> </a>
+                                <a href="{% url 'problemDelete' problem.id %}" class="btn btn-danger"> <i class="fa fa-trash"> </i> </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    {% endfor %}
+    <br><br><br> 
+{%  endblock %}
