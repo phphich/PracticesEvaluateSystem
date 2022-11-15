@@ -6,7 +6,7 @@
     {% if request.session.userName is None %}
         <a href="{% url 'home' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
             <i class="fa fa-list"></i> Objective </a>
-        <a href="{% url 'checkResult' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
+        <a href="{% url 'inputCheckScore' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
             <i class="fa fa-check-double"></i> Check Result </a>
     {% else %}
         <a href="{% url 'subjectList' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
@@ -17,7 +17,7 @@
             <i class="fa fa-list"></i> Problem List </a>
         <a href="{% url 'practicesSelect' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
             <i class="fa fa-laptop-code"></i></i> Practices Evaluation </a>
-        <a href="{% url 'checkResult' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
+        <a href="{% url 'inputCheckScore' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
                 <i class="fa fa-check-double"></i> Check Result </a>
 
         <!--a href="{ url 'clearSession' }" class="list-group-item list-group-item-action list-group-item-light text-primary">

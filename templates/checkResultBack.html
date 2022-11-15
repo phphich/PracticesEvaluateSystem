@@ -3,7 +3,16 @@
 {% load custom_tags %}
 
 {% block content %}
-    <h2>Practice Result </h2>
+    <div class="row">
+        <div class="col-8"> <h2>Practice Result </h2> </div>
+    <div class="col-4 text-end">
+            {% if request.session.viewMode == "normal" %}
+                <a href="{% url 'fullView' 'checkResult' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-expand-arrows-alt"></i></a>
+            {% else %}
+                <a href="{% url 'normalView' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-compress-arrows-alt"></i></a>
+            {% endif %}
+        </div>
+    </div>
     <h3>Subject: {{ subject.subid }} {{ subject.name }}</h3>
     <h3>Student: {{ student.stdid }} {{ student.name }} ({{ student.section.level }}{{ student.section.group }})</h3>
     <div>

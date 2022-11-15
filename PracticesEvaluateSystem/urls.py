@@ -35,10 +35,11 @@ urlpatterns = [
 
     path('practicesSelect', views.practiceSelect, name='practicesSelect'),
     path('practicesEvaluate', views.practicesEvaluate, name='practiceEvaluate'),
+    path('inputCheckScore', views.inputCheckResult, name='inputCheckScore'),
     path('checkResult', views.checkResult, name='checkResult'),
     path('userLogin', views.userLogin, name='userLogin'),
     path('userLogout', views.userLogout, name='userLogout'),
-    path('fullView', views.fullView, name='fullView'),
-    path('normalView', views.normalView, name='normalView'),
+    path('<url>/fullView', views.fullView, name='fullView'),
+    path('<url>/normalView', views.normalView, name='normalView'),
     path('clearSession', views.clearSession, name='clearSession')
 ]

@@ -251,15 +251,11 @@ def practicesEvaluate(request):
                 'scores':scores }
     return render(request, 'practicesEvaluate.html', context)
 
-def checkResult(request):
+def inputCheckResult(request):
     if request.method=='POST':
         subid = request.POST['subid']
         stdid = request.POST['stdid']
-        subject = Subject.objects.get(subid = subid)
-        problems=Problem.objects.filter(subject_id = subid).order_by('objid')
         student = Student.objects.filter(stdid=stdid).first()
-        scores = Score.objects.filter(student_id=stdid, problem_id__in=problems).order_by('problem__objid')
-
         # หาคะแนนของนักศึกษาใน Score ที่ปฏิบัติวิชาที่เลือก
         # Department.objects.filter(departmentvolunteer__department__isnull=True)
         if student is None:
@@ -268,14 +264,25 @@ def checkResult(request):
             context = {'subjects': subjects}
             return render(request, 'inputStudentID.html', context)
         else:
-
-            # context = {'subject':subject, 'student':student, 'scores':scores}
-            context = {'subject': subject, 'student': student, 'problems': problems, 'scores':scores}
-            return render(request, 'checkResult.html', context)
+            request.session['subid'] = subid
+            request.session['stdid'] = stdid  # section id
+            return redirect('checkResult')
+            # context = {'subject': subject, 'student': student, 'problems': problems, 'scores':scores}
+            # return render(request, 'checkResult.html', context)
     else:
         subjects = Subject.objects.all()
         context= {'subjects':subjects}
         return render(request, 'inputStudentID.html', context)
+
+def checkResult(request):
+    subid = request.session.get('subid')
+    stdid = request.session.get('stdid')
+    subject = Subject.objects.get(subid=subid)
+    problems = Problem.objects.filter(subject_id=subid).order_by('objid')
+    student = Student.objects.filter(stdid=stdid).first()
+    scores = Score.objects.filter(student_id=stdid, problem_id__in=problems).order_by('problem__objid')
+    context = {'subject': subject, 'student': student, 'problems': problems, 'scores':scores}
+    return render(request, 'checkResult.html', context)
 
 def userLogin(request):
     if request.method == 'POST':
@@ -303,13 +310,13 @@ def userLogout(request):
     messages.info(request, "User Logout")
     return redirect('home')
 
-def fullView(request):
+def fullView(request, url):
     request.session['viewMode'] = "full"
-    return redirect('practiceEvaluate')
+    return redirect(url)
 
-def normalView(request):
+def normalView(request, url):
     request.session['viewMode'] = "normal"
-    return redirect('practiceEvaluate')
+    return redirect(url)
 
 def clearSession(request):
     if request.session.get('subid'):

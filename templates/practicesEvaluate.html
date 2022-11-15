@@ -15,11 +15,13 @@
     </script>
     <div class="row">
         <div class="col-8"><h2>Practices Evaluation - {{ section }} </h2> </div>
-        {% if request.session.viewMode == "normal" %}
-            <div class="col-4 text-end"><a href="{% url 'fullView' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-expand-arrows-alt"></i></a> </div>
-        {% else %}
-            <div class="col-4 text-end"><a href="{% url 'normalView' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-compress-arrows-alt"></i></a> </div>
-        {% endif %}
+        <div class="col-4 text-end">
+            {% if request.session.viewMode == "normal" %}
+                <a href="{% url 'fullView' 'practiceEvaluate' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-expand-arrows-alt"></i></a>
+            {% else %}
+                <a href="{% url 'normalView' 'practiceEvaluate' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-compress-arrows-alt"></i></a>
+            {% endif %}
+        </div>
     </div>
     <div>
         <h3>
