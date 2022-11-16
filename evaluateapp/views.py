@@ -3,17 +3,20 @@ from .models import *
 from .forms import *
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+
 def home(request):
     request.session['viewMode'] = "normal"
     return render(request, 'home.html')
 
 #-----------------Subject CRUD --------------------#
+@login_required(login_url='userLogin')
 def subjectList(request):
     subjects = Subject.objects.all()
     context = {'subjects': subjects}
     return render(request, 'subjectList.html', context)
 
+@login_required(login_url='userLogin')
 def subjectNew(request):
     if request.method == 'POST':
         form = SubjectForm(data=request.POST)
@@ -28,6 +31,7 @@ def subjectNew(request):
         context = {'form': form}
         return render(request, 'subjectNew.html', context)
 
+@login_required(login_url='userLogin')
 def subjectUpdate(request,subid):
     subject = get_object_or_404(Subject, subid=subid)
     form = SubjectForm(data=request.POST or None, instance=subject)
@@ -43,6 +47,7 @@ def subjectUpdate(request,subid):
         context = {'form': form}
         return render(request, 'subjectUpdate.html', context)
 
+@login_required(login_url='userLogin')
 def subjectDelete(request,subid):
     subject = get_object_or_404(Subject, subid=subid)
     form = SubjectForm(data=request.POST or None, instance=subject)
@@ -54,6 +59,7 @@ def subjectDelete(request,subid):
         context = {'form': form, 'subject': subject}
         return render(request, 'subjectDelete.html', context)
 #-----------------Student CRUD --------------------#
+@login_required(login_url='userLogin')
 def studentList(request):
     if request.method == 'POST':
         sid = request.POST['sid']
@@ -66,6 +72,7 @@ def studentList(request):
     context = {'sections':sections,'sectionSelected':sectionSelected,  'students':students}
     return render(request, 'studentList.html', context)
 
+@login_required(login_url='userLogin')
 def studentNew(request):
     if request.method == 'POST':
         form = StudentForm(data=request.POST)
@@ -80,6 +87,7 @@ def studentNew(request):
         context = {'form': form}
         return render(request, 'studentNew.html', context)
 
+@login_required(login_url='userLogin')
 def studentUpdate(request, stdid):
     student = get_object_or_404(Student, stdid=stdid)
     form = StudentForm(data=request.POST or None, instance=student)
@@ -95,6 +103,7 @@ def studentUpdate(request, stdid):
         context = {'form':form}
         return render(request, 'studentUpdate.html', context)
 
+@login_required(login_url='userLogin')
 def studentDelete(request, stdid):
     student = get_object_or_404(Student, stdid=stdid)
     form = StudentForm(data=request.POST or None, instance=student)
@@ -107,6 +116,7 @@ def studentDelete(request, stdid):
         return render(request, 'studentDelete.html', context)
 
 #-----------------Problem CRUD --------------------#
+@login_required(login_url='userLogin')
 def problemList(request):
     if request.method == 'POST':
         subid = request.POST['subid']
@@ -120,6 +130,7 @@ def problemList(request):
     context = {'subjects':subjects,'subjectSelected':subject,'problems':problems}
     return render(request, 'problemList.html', context)
 
+@login_required(login_url='userLogin')
 def problemNew(request):
     if request.method == 'POST':
         form = ProblemForm(data=request.POST)
@@ -144,6 +155,7 @@ def problemNew(request):
         context = {'form': form}
         return render(request, 'problemNew.html', context)
 
+@login_required(login_url='userLogin')
 def problemUpdate(request, id):
     problem = get_object_or_404(Problem, id=id)
     form = ProblemForm(data=request.POST or None, instance=problem)
@@ -159,6 +171,7 @@ def problemUpdate(request, id):
         context = {'form':form}
         return render(request, 'problemUpdate.html', context)
 
+@login_required(login_url='userLogin')
 def problemDelete(request, id):
     problem = get_object_or_404(Problem, id=id)
     form = ProblemForm(data=request.POST or None, instance=problem)
@@ -170,6 +183,7 @@ def problemDelete(request, id):
         context = {'form':form, 'problem':problem}
         return render(request, 'problemDelete.html', context)
 
+@login_required(login_url='userLogin')
 def practiceSelect(request):
     subjects = Subject.objects.all()
     sections = Section.objects.all()
@@ -194,7 +208,7 @@ def practiceSelect(request):
             request.session['pid'] = pid
             return redirect('practiceEvaluate')
     else: #เข้ามาครั้งแรก
-        if request.session.get('subid'): # กรณี Back กลับมา
+        if request.session.get('sid'): # กรณี Back กลับมา
             subid = request.session.get('subid')
             sid = request.session.get('sid')
             pid = request.session.get('pid')
@@ -213,6 +227,7 @@ def practiceSelect(request):
                    'problems': problems, 'problemSelected':problem}
         return render(request, 'practicesSelect.html', context)
 
+@login_required(login_url='userLogin')
 def practicesEvaluate(request):
     if request.method == "POST":
         subid =request.POST['subid']
@@ -294,7 +309,7 @@ def userLogin(request):
             if user is not None:
                 login(request, user)
                 request.session['userName'] = userName
-                messages.success(request, "User Logged")
+                messages.success(request, "User logged in successfully...")
                 return redirect('home')
             else:
                 messages.error(request, "User Name or Password not correct..!!!")
@@ -307,7 +322,7 @@ def userLogin(request):
 
 def userLogout(request):
     logout(request)
-    messages.info(request, "User Logout")
+    messages.info(request, "User logged out successfully... ")
     return redirect('home')
 
 def fullView(request, url):

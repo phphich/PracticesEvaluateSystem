@@ -7,7 +7,7 @@
         <a href="{% url 'home' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
             <i class="fa fa-list"></i> Objective </a>
         <a href="{% url 'inputCheckScore' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
-            <i class="fa fa-check-double"></i> Check Result </a>
+            <i class="fa fa-check-double"></i> Check Practices Score </a>
     {% else %}
         <a href="{% url 'subjectList' %}" class="list-group-item list-group-item-action list-group-item-light text-primary">
             <i class="fa fa-list"></i> Subject List</a>
@@ -31,7 +31,7 @@
         <i class="fa-solid fa-users-gear"></i> User:</b></li>
     <li class="list-group-item text-success">
         {% if request.session.userName %}
-            <i class="fa fa-user"></i> Logged with: {{ request.session.userName }} <br>
+            <i class="fa fa-user"></i> Logged with: [{{ request.session.userName }}] <br>
             <hr class="text-secondary">
             <div class="row">
                 <div class="col col-6 text-lg-start">
@@ -42,6 +42,8 @@
                 </div>
             </div>
         {% else %}
+            <i class="fa fa-user"></i> Logged with: [Guest] <br>
+            <hr class="text-secondary">
             <p class="text-end">
                 <a href="{% url 'userLogin' %}" class="text-lg-end text-success">
                      <i class="fa fa-sign-in-alt"></i>Log in</a>

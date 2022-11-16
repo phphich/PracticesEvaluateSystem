@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-8"> <h2>Practice Result </h2> </div>
+        <div class="col-8"> <h2>Check Practices Score </h2> </div>
     <div class="col-4 text-end">
             {% if request.session.viewMode == "normal" %}
                 <a href="{% url 'fullView' 'checkResult' %}" class="btn btn-secondary" style="margin-top:10px"><i class="fa fa-expand-arrows-alt"></i></a>
@@ -26,9 +26,9 @@
                 </th>
             </tr>
             <tr class="text-center">
-                <th>ถูกต้อง</th>
-                <th>ถูกต้องบางส่วน</th>
-                <th>ไม่ถูกต้อง</th>
+                <th>Correct</th>
+                <th>Some Mistakes</th>
+                <th>Not Correct</th>
             </tr>
             <tr><td colspan="6"></td></tr>
             {% for problem in problems %}
